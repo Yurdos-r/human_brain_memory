@@ -1,4 +1,4 @@
-"""AstrBot integration for Human Brain Memory Framework 1.0 Beta."""
+"""AstrBot integration for Human Brain Memory Framework 0.1.0."""
 
 import asyncio
 import hashlib
@@ -15,7 +15,7 @@ from .human_brain_memory import MemoryConfig, MemoryEngine, Store
 from .human_brain_memory.recall import dumps
 
 PLUGIN = "astrbot_plugin_human_brain_memory"
-HELP = """Human Brain Memory Framework · 1.0 Beta
+HELP = """Human Brain Memory Framework · 0.1.0
 /memory status — 本会话状态（含会话标识）
 /memory list [active|frozen|trash] — 自己的记忆，管理员可看本会话全部
 /memory remember 内容 — 确认保存自己的事实

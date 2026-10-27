@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0 — 2026-10-27
+
+First regular release of **Human Brain Memory Framework（人脑记忆框架）**.
+
+- Unified plugin, Python package and installation archive versions as `0.1.0`.
+- Documentation covers memory capabilities, configuration, commands and Python integration.
+- Release automation publishes regular releases as Latest.
+- Includes the memory engine and AstrBot adapter introduced in the earlier beta.
+
 ## 1.0.0-beta.1 — 2026-10-27
 
 First standalone beta of **Human Brain Memory Framework（人脑记忆框架）**.

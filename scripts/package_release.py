@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.0.0-beta.1"
+VERSION = "0.1.0"
 PLUGIN = "astrbot_plugin_human_brain_memory"
 FILES = ["__init__.py", "main.py", "metadata.yaml", "_conf_schema.json", "requirements.txt",
          "README.md", "README.en.md", "LICENSE", "CHANGELOG.md", "pyproject.toml", "MANIFEST.in", ".gitignore"]

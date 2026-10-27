@@ -1,6 +1,6 @@
 # Human Brain Memory Framework
 
-**人脑记忆框架 · 1.0 Beta** · MIT · Python 3.11+ · AstrBot 4.29.x
+**人脑记忆框架 · 0.1.0** · MIT · Python 3.11+ · AstrBot 4.29.x
 
 [English](README.en.md) · [架构与接口](docs/ARCHITECTURE.md) · [版本记录](CHANGELOG.md)
 
@@ -35,7 +35,7 @@ Human Brain Memory Framework 为对话应用提供持久化记忆：保存用户
 ## 安装到 AstrBot
 
 1. 准备 **Python 3.11+** 与 **AstrBot 4.29.x**，并在 AstrBot 中启用聊天模型。
-2. 在 AstrBot WebUI 的插件管理中，通过仓库地址 `https://github.com/Yurdos-r/human_brain_memory` 安装，或下载 [Release 安装包](https://github.com/Yurdos-r/human_brain_memory/releases/tag/v1.0.0-beta.1)。
+2. 在 AstrBot WebUI 的插件管理中，通过仓库地址 `https://github.com/Yurdos-r/human_brain_memory` 安装，或下载 [Release 安装包](https://github.com/Yurdos-r/human_brain_memory/releases/tag/v0.1.0)。
 3. 若当前 WebUI 不提供 ZIP 安装，将 ZIP 解压到 AstrBot 的 `data/plugins/`，确保结构如下，然后重新加载插件：
 
    ```text

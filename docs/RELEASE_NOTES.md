@@ -1,4 +1,4 @@
-# Human Brain Memory Framework · 1.0 Beta
+# Human Brain Memory Framework · 0.1.0
 
 人脑记忆框架为对话应用提供持久化记忆，支持直接接入 AstrBot，也可作为独立 Python 核心嵌入其他应用。
 

@@ -1,4 +1,4 @@
-name: Beta release
+name: Release
 on:
   push:
     tags: ['v*']
@@ -16,12 +16,13 @@ jobs:
       - run: python -m ruff check .
       - run: python -m pytest -q
       - run: python scripts/package_release.py
-      - name: Publish beta assets
+      - name: Publish release assets
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" --prerelease=false --latest
             gh release upload "$GITHUB_REF_NAME" dist/*.zip dist/SHA256SUMS.txt --clobber
           else
-            gh release create "$GITHUB_REF_NAME" dist/*.zip dist/SHA256SUMS.txt --prerelease --title "Human Brain Memory Framework $GITHUB_REF_NAME" --notes-file docs/RELEASE_NOTES.md
+            gh release create "$GITHUB_REF_NAME" dist/*.zip dist/SHA256SUMS.txt --latest --title "Human Brain Memory Framework $GITHUB_REF_NAME" --notes-file docs/RELEASE_NOTES.md
           fi
