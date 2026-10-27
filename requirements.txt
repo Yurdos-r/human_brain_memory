@@ -1,0 +1,2 @@
+# AstrBot provides its own SDK and configured LLM/embedding providers.
+tzdata>=2024.1; sys_platform == "win32"

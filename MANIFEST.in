@@ -1,0 +1,8 @@
+include __init__.py main.py metadata.yaml _conf_schema.json requirements.txt
+include README.md README.en.md LICENSE CHANGELOG.md .gitignore
+recursive-include docs *.md
+recursive-include scripts *.py
+recursive-include tests *.py
+recursive-include .github *.yml
+global-exclude *.py[cod]
+global-exclude *.sqlite3 *.db

@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "human-brain-memory-framework"
+version = "1.0.0b1"
+description = "A scoped, auditable memory engine with an AstrBot adapter"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Yurdos-r"}]
+dependencies = ["tzdata>=2024.1; sys_platform == 'win32'"]
+
+[project.urls]
+Repository = "https://github.com/Yurdos-r/human_brain_memory"
+Issues = "https://github.com/Yurdos-r/human_brain_memory/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.9", "build>=1.2"]
+
+[tool.setuptools.packages.find]
+include = ["human_brain_memory*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
