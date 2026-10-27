@@ -13,7 +13,3 @@ First standalone beta of **Human Brain Memory Framework（人脑记忆框架）*
 - Exact user quotes and explicit commands are distinguished from generated inferences.
 - Model-generated corrections cannot replace user-confirmed facts.
 - Scoped management commands, change journal and optimistic batch undo.
-
-Beta limits: no standalone dashboard, no automatic import of the original QQ bot database,
-no cross-session sharing, no proactive message delivery. AstrBot owns short-term conversation history.
-Automated tests use deterministic providers; live platform/model validation remains a deployment step.

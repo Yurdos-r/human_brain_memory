@@ -8,31 +8,30 @@
 - Python 包版本：`1.0.0b1`（同一 Beta 的 PEP 440 表示）
 - 许可证：MIT
 
-## 首次推送
+## 开发验证与打包
 
-1. 在自己的 GitHub 账号下创建空仓库（公开开源项目选择 Public）。
-2. `metadata.yaml` 已填写 `https://github.com/Yurdos-r/human_brain_memory` 与作者 `Yurdos-r`。
-3. 在当前项目目录执行：
+```bash
+python -m venv .venv
+# 激活虚拟环境后：
+python -m pip install -e ".[dev]"
+python -m ruff check .
+python -m pytest -q
+python scripts/package_release.py
+```
 
-   ```bash
-   git init -b main
-   git add .
-   git commit -m "Release Human Brain Memory Framework 1.0 Beta"
-   git remote add origin https://github.com/Yurdos-r/human_brain_memory.git
-   git push -u origin main
-   ```
+GitHub Actions 覆盖 Windows/Linux、Python 3.11/3.12。自动化测试使用临时数据库、确定性模型和模拟 SDK；实际平台通信、模型输出质量及多插件协作需要在部署环境中验证。
 
-   仓库已初始化时省略 `git init`；若已经配置 origin，不要重复添加。其他用户 fork 后使用自己的仓库地址。
+打包脚本按源码白名单生成插件 ZIP、内容清单和 SHA-256 校验文件，输出到 `dist/`。
 
-4. 推送 tag，GitHub Actions 会执行测试、打包并创建 **Prerelease**：
+## 发布新版本
 
-   ```bash
-   git tag v1.0.0-beta.1
-   git push origin v1.0.0-beta.1
-   ```
+1. 更新 `metadata.yaml`、`pyproject.toml`、打包脚本中的版本号及版本记录，保持 Git 标签和 Python 包版本对应。
+2. 完成开发验证与下方部署检查，将变更提交到仓库。
+3. 为该提交创建新的版本标签并推送。GitHub Actions 会测试、打包并创建预发布版本；已发布的标签保留不动。
+4. 发布正文使用 `docs/RELEASE_NOTES.md`，围绕该版本的能力、安装与使用说明编写。
 
-也可以手工创建 Release，勾选 Pre-release，上传 `dist/` 中的 ZIP 和 `SHA256SUMS.txt`，正文使用 `docs/RELEASE_NOTES.md`。
-Actions 无需配置个人令牌，使用仓库自带的 `GITHUB_TOKEN`，需要允许 workflow 写入仓库内容。
+也可手工创建 Release，勾选 Pre-release，上传 `dist/` 中的插件 ZIP 和 `SHA256SUMS.txt`。
+发布工作流使用仓库自带的 `GITHUB_TOKEN`，需要 `contents: write` 权限。
 
 ## 发布前的真实环境验证
 
@@ -46,8 +45,6 @@ Actions 无需配置个人令牌，使用仓库自带的 `GITHUB_TOKEN`，需要
 6. 关闭、重载插件，确认没有重复后台任务，之前记忆仍在。
 7. 新建备份，在停机状态下使用备份副本恢复，确认记录可读取。
 
-## 与原 QQ Bot 的关系
+## 发布文件
 
-这是独立的新仓库。发布包不包含原 QQ Bot 的配置、QQ 号、聊天记录、数据库、环境变量或 API Key。
-不要将原项目整个目录复制进这个仓库，也不要将运行数据提交到 GitHub。
-原数据库不自动导入；需要迁移时，应明确目标会话映射、脱敏规则和备份策略后另做迁移工具。
+发布内容包含框架源码、AstrBot 适配入口、配置说明与使用文档。运行数据库、聊天记录、备份、环境变量和密钥保存在部署环境中，不纳入发布包。

@@ -71,7 +71,6 @@ No automatic “failed three times, skip this batch” behavior is used.
 
 Daily processing uses the configured IANA timezone and bounded batches. New sessions wait for their
 first scheduled night. Long-running conversations are still processed during nightly consolidation.
-There is no automatic import of the original QQ bot's global IDs or owner bypass rules.
 
 Undo is a compensating operation on derived records, not raw messages or cursor rollback. If any
 affected row changed after the batch (including recall metadata), the entire undo is refused.

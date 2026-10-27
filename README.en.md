@@ -2,61 +2,134 @@
 
 **1.0 Beta** (`v1.0.0-beta.1`) · MIT · Python 3.11+ · AstrBot 4.29.x
 
-[中文说明](README.md)
+[中文说明](README.md) · [Architecture and API](docs/ARCHITECTURE.md) · [Changelog](CHANGELOG.md)
 
-A standalone memory engine extracted from a personal QQ agent, with an AstrBot adapter.
-It supports facts, episodes, scoped profiles, self reflections, fading-episode gists,
-followups, lexical/semantic retrieval, bounded reinforcement, decay, frozen memories,
-atomic processing, retries, audit records, safe undo, and rotating SQLite backups.
+Give conversational applications a lasting memory: remember facts and experiences, recall them when relevant, and gradually turn past conversations into longer-term understanding.
 
-## Install
+Human Brain Memory Framework provides an **AstrBot plugin** and an independent **Python memory engine** for integration into other applications.
 
-Install the published GitHub repository through AstrBot's plugin manager, or unpack the
-release ZIP under `data/plugins/astrbot_plugin_human_brain_memory/` and reload plugins.
-The deployed directory must use this underscore name, not the display name containing spaces.
-For manual deployment, install `requirements.txt` in AstrBot's Python environment.
+## Capabilities
 
-Configure `summary_provider_id` (empty follows the current conversation's provider) and
-optionally `embedding_provider_id`. These are AstrBot provider IDs, not API keys.
-The default cosine thresholds target bge-m3; calibrate them for other models.
+| Capability | What it does |
+| --- | --- |
+| Facts | Store preferences, habits and important information with explicit confirmation and correction |
+| Episodes | Summarize conversations into experiences with message references and emotional context |
+| Profiles and reflections | Periodically update impressions of users and the bot's own reflections |
+| Keyword and semantic recall | Retrieve memories for the current topic, with optional embeddings for semantically related wording |
+| Forgetting and reinforcement | Let ordinary memories fade, reinforce relevant recollections, pin important records and revive frozen memories |
+| Episode gists | Condense fading experiences into a broader impression of a period |
+| Followups | Add pending topics to reply context when their date arrives or the conversation resumes |
+| Session isolation | Keep memories scoped to a platform instance, bot account and conversation |
+| Memory management | Search, correct, pin, restore, undo consolidation batches and back up the database |
 
-Try `/memory help`, `/memory remember I do not drink coffee`, and `/memory search coffee`.
-Administrators can run `/memory consolidate`, inspect `/memory runs`, and undo a batch.
-Backups are only available in administrator private chats.
+## How memory works
 
-## Privacy and correctness
+1. Record user and assistant messages that enter the model conversation by default.
+2. Summarize episodes after 30 idle minutes and at least two new messages by default.
+3. Consolidate facts, profiles, reflections and followups in batches after 04:00 Asia/Shanghai by default.
+4. Retrieve relevant memories before a reply and include profiles and pending followups in the model's context.
+5. Gradually fade ordinary memories into frozen or trash states, reinforce relevant recollections, and summarize fading episodes into gists.
 
-All raw and derived data is isolated by platform instance, bot account, and conversation UMO.
-The model cannot widen visibility with generated flags. Administrators do not bypass scopes.
-Only LLM-triggering conversations are recorded by default; passive capture is opt-in.
+Profiles are updated during daily consolidation. Followups support subsequent replies and can be inspected with `/memory followups`.
 
-Similarity is used for retrieval, **not entailment**. Generated paraphrases remain inferences
-and cannot replace user-confirmed facts. Exact-quote storage preserves the entire current
-user message, including negation; explicit corrections use `/memory replace`.
-Inference is not truth verification: review important memories before relying on them.
+## Install in AstrBot
 
-Data is stored under `data/plugin_data/astrbot_plugin_human_brain_memory/`. Configured model
-and embedding providers receive the relevant text. Nothing is sent to a hardcoded service.
-Uninstallation does not intentionally delete data. Stop the plugin before restoring backups.
+1. Prepare Python 3.11+ and AstrBot 4.29.x with a chat model enabled.
+2. Install `https://github.com/Yurdos-r/human_brain_memory` through AstrBot's plugin manager, or download the [release ZIP](https://github.com/Yurdos-r/human_brain_memory/releases/tag/v1.0.0-beta.1).
+3. For manual installation, extract the ZIP into `data/plugins/astrbot_plugin_human_brain_memory/`, install `requirements.txt` in AstrBot's Python environment, and reload plugins. `main.py` and `metadata.yaml` should be directly inside that plugin directory.
+4. Configure `summary_provider_id`, or leave it empty to use the current conversation's model.
+5. Optionally configure an AstrBot embedding provider and set `embedding_provider_id`.
+6. Send `/memory status` to check the plugin.
 
-## Core API
+## Try it
 
-`pip install .` installs only the independent `human_brain_memory` package. Provide asynchronous
-generation/embedding callbacks to `MemoryEngine`; the core imports neither AstrBot nor an LLM SDK.
-See [architecture](docs/ARCHITECTURE.md) for the callback contract.
-
-## Development and release
-
-```bash
-python -m pip install -e ".[dev]"
-python -m ruff check .
-python -m pytest -q
-python scripts/package_release.py
+```text
+/memory remember I do not drink coffee
+/memory search coffee
+/memory list
 ```
 
-The ZIP uses an explicit source allowlist and excludes credentials, databases and virtual environments.
-Read [publishing](docs/PUBLISHING.md) before uploading the first beta.
+Related memories become context for later replies. Keyword mode matches words such as “coffee”; an embedding provider adds semantic retrieval for related wording.
 
-This beta has deterministic core and adapter tests, and SDK contracts checked against AstrBot 4.29.3.
-It has not been certified against a live AstrBot deployment. No automatic import of the original QQ
-bot database, standalone dashboard, cross-session sharing, or proactive message delivery is included.
+Use the ID returned by search or list commands to pin a memory, correct it or restore it from trash.
+
+## Commands
+
+| Command | Purpose |
+| --- | --- |
+| `/memory help` | Show command help |
+| `/memory status` | Show session statistics and processing status |
+| `/memory remember content` | Explicitly save a fact about yourself |
+| `/memory search keywords` | Search memories visible in this session |
+| `/memory list [active\|frozen\|trash]` | List recent memories; users see their own, administrators see the current session |
+| `/memory replace ID content` | Correct a fact |
+| `/memory pin ID`, `/memory unpin ID` | Pin or unpin a memory |
+| `/memory forget ID`, `/memory restore ID` | Move a memory to trash or restore it |
+| `/memory profile`, `/memory followups` | View your profile or pending followups |
+| `/memory consolidate` | Administrator: process a consolidation batch |
+| `/memory runs`, `/memory undo BATCH_ID` | Administrator: inspect or undo a batch in this session |
+| `/memory backup` | Administrator private chat: back up the plugin database |
+
+The model has four tools: `hbm_remember`, `hbm_recall`, `hbm_plan_followup` and `hbm_finish_followup`.
+
+## Configuration
+
+Configure the plugin through AstrBot's settings panel. All options are listed in [`_conf_schema.json`](_conf_schema.json).
+
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| `summary_provider_id` | Empty | Use the conversation's model, or select a provider for consolidation |
+| `embedding_provider_id` | Empty | Use keyword recall, or select an embedding provider for semantic recall |
+| `inject_limit` / `context_chars` | 12 / 6000 | Limit memories and characters included in reply context, including pinned records |
+| `episode_idle_minutes` | 30 | Idle time before episode processing |
+| `consolidate_hour` / `timezone` | 4 / `Asia/Shanghai` | Daily consolidation schedule |
+| `forget` / `emotions` / `gist` / `followups` | Enabled | Enable forgetting, episode emotions, gists and followups |
+| `session_allowlist` | Empty list | Restrict recording to selected conversation UMOs shown by `/memory status` |
+| `record_all_messages` | Disabled | Also record ordinary text that does not trigger a reply in allowed sessions |
+| `backup_keep` | 7 | Number of database backups to retain |
+
+Consolidation calls the selected chat model; semantic retrieval calls the selected embedding provider. Relevant text is sent to those providers. Keyword recall requires no embedding provider. New embeddings are filled in gradually in the background while keyword retrieval remains available.
+
+Default semantic thresholds target bge-m3. Adjust `semantic_floor` and `semantic_ceiling` for other models. Update `embedding_cache_version` after changing a service or vector dimension under the same provider and model name.
+
+## Confirm and manage memories
+
+Explicitly saved information is marked `said`; model-generated summaries are marked `inferred`. Consolidation can update earlier inferences. User-confirmed facts are corrected with `/memory replace`, keeping confirmed information distinct from generated interpretations.
+
+Private chats, groups and bot instances have separate scopes for facts, episodes, profiles, reflections and followups. Users manage their own memories; administrators can inspect and undo batches within the current conversation.
+
+## Data and backups
+
+Data is stored in `data/plugin_data/astrbot_plugin_human_brain_memory/`:
+
+```text
+memory.sqlite3
+backups/
+```
+
+Daily backups retain the latest seven copies by default. Stop the plugin before restoring a complete backup, preserve the current database and WAL files, and ensure stale WAL/SHM files are not reused with the restored database.
+
+Raw messages and trash records remain in the database, including after uninstalling the plugin. To clear them, stop the plugin and remove its data directory and backups.
+
+## Use the Python core
+
+Install the core with `pip install .`. For AstrBot, install the complete repository or plugin ZIP.
+
+```python
+from human_brain_memory import MemoryEngine, Store
+
+store = Store("memory.sqlite3")
+engine = MemoryEngine(store)
+engine.remember("my-app:chat-1", "user-1", "I do not drink coffee", explicit=True)
+# Inside an async function:
+# items = await engine.recall("my-app:chat-1", "user-1", "coffee")
+store.close()
+```
+
+Provide asynchronous generation and optional embedding callbacks to enable model-powered processing. See the [architecture and host API](docs/ARCHITECTURE.md) for integration details.
+
+## Development and license
+
+See the [development and publishing guide](docs/PUBLISHING.md) for checks and packaging.
+
+Licensed under [MIT](LICENSE).
