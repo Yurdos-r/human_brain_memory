@@ -1,7 +1,7 @@
 name: astrbot_plugin_human_brain_memory
 display_name: Human Brain Memory Framework
 desc: 人脑记忆框架：事实、经历、画像、遗忘、语义召回与待跟进，按会话隔离。
-version: v0.1.0
+version: v0.1.1
 author: Yurdos-r
 repo: https://github.com/Yurdos-r/human_brain_memory
 astrbot_version: ">=4.29,<5"

@@ -1,6 +1,11 @@
-# Human Brain Memory Framework · 0.1.0
+# Human Brain Memory Framework · 0.1.1
 
 人脑记忆框架为对话应用提供持久化记忆，支持直接接入 AstrBot，也可作为独立 Python 核心嵌入其他应用。
+
+## 本次更新
+
+- 修复在 AstrBot 4.29.x 上插件无法加载的问题：`hbm_remember` 和 `hbm_finish_followup` 两个工具的参数类型写成了 AstrBot 不接受的 `integer`，导入时报“不支持的参数类型”。现已改为 `number`，模型传入小数时会转换为整数。
+- 已安装 0.1.0 的用户更新插件后重新加载即可，原有数据库无需迁移。
 
 ## 核心能力
 

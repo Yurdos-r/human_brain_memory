@@ -1,6 +1,6 @@
 # Human Brain Memory Framework
 
-**0.1.0** (`v0.1.0`) · MIT · Python 3.11+ · AstrBot 4.29.x
+**0.1.1** (`v0.1.1`) · MIT · Python 3.11+ · AstrBot 4.29.x
 
 [中文说明](README.md) · [Architecture and API](docs/ARCHITECTURE.md) · [Changelog](CHANGELOG.md)
 
@@ -35,7 +35,7 @@ Profiles are updated during daily consolidation. Followups support subsequent re
 ## Install in AstrBot
 
 1. Prepare Python 3.11+ and AstrBot 4.29.x with a chat model enabled.
-2. Install `https://github.com/Yurdos-r/human_brain_memory` through AstrBot's plugin manager, or download the [release ZIP](https://github.com/Yurdos-r/human_brain_memory/releases/tag/v0.1.0).
+2. Install `https://github.com/Yurdos-r/human_brain_memory` through AstrBot's plugin manager, or download the [release ZIP](https://github.com/Yurdos-r/human_brain_memory/releases/tag/v0.1.1).
 3. For manual installation, extract the ZIP into `data/plugins/astrbot_plugin_human_brain_memory/`, install `requirements.txt` in AstrBot's Python environment, and reload plugins. `main.py` and `metadata.yaml` should be directly inside that plugin directory.
 4. Configure `summary_provider_id`, or leave it empty to use the current conversation's model.
 5. Optionally configure an AstrBot embedding provider and set `embedding_provider_id`.

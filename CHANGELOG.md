@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1 — 2026-10-28
+
+- Fixed plugin loading on AstrBot 4.29.x: the `hbm_remember` and `hbm_finish_followup` tools declared `integer` parameters, which AstrBot rejects at import time. They now use `number`, and fractional values from the model are converted to integers.
+- Adapter tests now check LLM tool parameter types against the types AstrBot accepts.
+
 ## 0.1.0 — 2026-10-27
 
 First regular release of **Human Brain Memory Framework（人脑记忆框架）**.

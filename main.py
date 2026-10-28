@@ -1,4 +1,4 @@
-"""AstrBot integration for Human Brain Memory Framework 0.1.0."""
+"""AstrBot integration for Human Brain Memory Framework 0.1.1."""
 
 import asyncio
 import hashlib
@@ -15,7 +15,7 @@ from .human_brain_memory import MemoryConfig, MemoryEngine, Store
 from .human_brain_memory.recall import dumps
 
 PLUGIN = "astrbot_plugin_human_brain_memory"
-HELP = """Human Brain Memory Framework · 0.1.0
+HELP = """Human Brain Memory Framework · 0.1.1
 /memory status — 本会话状态（含会话标识）
 /memory list [active|frozen|trash] — 自己的记忆，管理员可看本会话全部
 /memory remember 内容 — 确认保存自己的事实
@@ -182,7 +182,7 @@ class HumanBrainMemoryPlugin(Star):
 
         Args:
             content(string): 记忆内容；exact_quote=true 时必须等于用户当前整条消息，保留否定和主体。
-            importance(integer): 重要性 1–10，推断上限为 7。
+            importance(number): 重要性 1–10 的整数，推断上限为 7。
             exact_quote(boolean): 是否保存用户当前整条原话，默认 false。
         """
         try:
@@ -226,12 +226,12 @@ class HumanBrainMemoryPlugin(Star):
         """把本会话当前用户已完成的跟进事项标记为完成。
 
         Args:
-            followup_id(integer): 待跟进编号。
+            followup_id(number): 待跟进编号。
         """
         try:
             scope, subject, _ = self._require(event)
-            return "已完成。" if self.engine.finish(scope, subject, followup_id) else "没有可完成的这条事项。"
-        except ValueError as exc:
+            return "已完成。" if self.engine.finish(scope, subject, int(followup_id)) else "没有可完成的这条事项。"
+        except (ValueError, TypeError) as exc:
             return str(exc)
 
     @filter.command("memory")

@@ -4,6 +4,7 @@ import asyncio
 import importlib
 import importlib.util
 import logging
+import re
 import sys
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
@@ -73,6 +74,14 @@ def plugin_class(monkeypatch, tmp_path):
             return fn
         return wrap
 
+    def llm_tool(*args, **kwargs):
+        # AstrBot rejects tool docstring types outside JSON schema's basic set at import time.
+        def wrap(fn):
+            for name, kind in re.findall(r'^\s+(\w+)\((\w+)\):', fn.__doc__ or '', re.M):
+                assert kind in {'string', 'number', 'object', 'array', 'boolean'}, f'{fn.__name__}.{name}: {kind}'
+            return fn
+        return wrap
+
     class Star:
         def __init__(self, context):
             self.context = context
@@ -82,7 +91,7 @@ def plugin_class(monkeypatch, tmp_path):
         'astrbot.api': {'AstrBotConfig': dict, 'logger': logging.getLogger('adapter-test')},
         'astrbot.api.event': {'AstrMessageEvent': Event, 'filter': SimpleNamespace(
             event_message_type=decorator, on_llm_request=decorator, on_llm_response=decorator,
-            llm_tool=decorator, command=decorator, EventMessageType=SimpleNamespace(ALL=7))},
+            llm_tool=llm_tool, command=decorator, EventMessageType=SimpleNamespace(ALL=7))},
         'astrbot.api.provider': {'LLMResponse': SimpleNamespace, 'ProviderRequest': SimpleNamespace},
         'astrbot.api.star': {'Star': Star, 'Context': Context, 'StarTools': SimpleNamespace(get_data_dir=lambda name: tmp_path)},
     }
@@ -193,3 +202,11 @@ async def test_commands_do_not_lose_spaces(plugin):
     assert '已确认' in result
     scope, _, _ = plugin._identity(Event())
     assert plugin.store.candidates(scope)[0]['content'] == 'I do not drink coffee'
+
+
+async def test_number_tool_arguments_accept_floats(plugin):
+    event = Event('下周提醒我体检')
+    await plugin.inject_memory(event, SimpleNamespace(system_prompt=''))
+    assert '已记住' in await plugin.remember_tool(event, '要去体检', importance=6.0)
+    fid = int((await plugin.followup_tool(event, '体检')).split('#')[1].rstrip('。'))
+    assert await plugin.finish_tool(event, float(fid)) == '已完成。'

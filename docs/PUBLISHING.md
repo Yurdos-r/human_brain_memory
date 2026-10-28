@@ -1,11 +1,11 @@
-# 发布 0.1.0
+# 发布 0.1.1
 
 显示名称：**Human Brain Memory Framework（人脑记忆框架）**。
 
 - GitHub 仓库：`Yurdos-r/human_brain_memory`
 - AstrBot 部署目录／插件 ID：`astrbot_plugin_human_brain_memory`
-- Git tag / Release：`v0.1.0`
-- Python 包版本：`0.1.0`
+- Git tag / Release：`v0.1.1`
+- Python 包版本：`0.1.1`
 - 许可证：MIT
 
 ## 开发验证与打包
@@ -37,7 +37,7 @@ GitHub Actions 覆盖 Windows/Linux、Python 3.11/3.12。自动化测试使用�
 
 自动化测试不能替代真实 AstrBot 部署。建议使用测试账号完成：
 
-1. 从 ZIP 安装，确认插件显示 0.1.0，配置面板可保存，四个工具被识别。
+1. 从 ZIP 安装，确认插件显示 0.1.1，配置面板可保存，四个工具被识别。
 2. 私聊记录“我不是医生”，确认原话保留；群里检索不到私聊内容。
 3. 换一个平台实例／账号，确认同名用户不会复用其他实例的私聊。
 4. 管理员执行 `/memory consolidate`，确认事实、画像和游标更新；普通用户不能调用此管理命令。
